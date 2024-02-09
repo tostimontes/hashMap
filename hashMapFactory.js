@@ -69,7 +69,6 @@ function createHashMap() {
     return !!hashMap.get(key);
   };
 
-  // takes a key as an argument. If the given key is in the hash map, it should remove the entry with that key and return true. If the key isn’t in the hash map, it should return false.
   hashMap.remove = (key) => {
     const retrievalBucket = hashMap[hash(key)];
     const hashCode = hash(key);
@@ -111,12 +110,24 @@ function createHashMap() {
     return traverseList(retrievalBucket, key);
   };
 
-  //   hashMap.length = () => {
-  //     // returns the number of stored keys in the hash map.
-  //   };
+  hashMap.count = () => {
+    let total = 0;
+    hashMap.forEach((bucket) => {
+      let currentBucket = bucket;
+      while (currentBucket) {
+        if (currentBucket.key) {
+          total += 1;
+        }
+        currentBucket = currentBucket.next;
+      }
+    });
+    return total;
+  };
 
   hashMap.clear = () => {
-    // removes all entries
+    hashMap.forEach((bucket, index) => {
+      hashMap[index] = undefined;
+    });
   };
 
   hashMap.keys = () => {
@@ -146,5 +157,7 @@ hashTable.set('eneko', 'ergsdf');
 hashTable.set('ainhoa', 'ergsdf');
 hashTable.set('ama', 'ergsdf');
 hashTable.set('aita', 'ergsdf');
+
+hashTable.count();
 
 console.log(hashTable);
