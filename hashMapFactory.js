@@ -27,7 +27,6 @@ function checkNext(obj, key, value) {
 }
 
 function createHashMap() {
-  // apply the modulo operator on each iteration instead of outside the loop at the end
   const hashMap = Array(16);
 
   const capacity = hashMap.length;
@@ -131,15 +130,45 @@ function createHashMap() {
   };
 
   hashMap.keys = () => {
-    // returns an array containing all the keys inside the hash map.
+    const keysArray = [];
+    hashMap.forEach((bucket) => {
+      let currentBucket = bucket;
+      while (currentBucket) {
+        if (currentBucket.key) {
+          keysArray.push(currentBucket.key);
+        }
+        currentBucket = currentBucket.next;
+      }
+    });
+    return keysArray;
   };
 
   hashMap.values = () => {
-    // returns an array containing all the values.
+    const valuesArray = [];
+    hashMap.forEach((bucket) => {
+      let currentBucket = bucket;
+      while (currentBucket) {
+        if (currentBucket.value) {
+          valuesArray.push(currentBucket.value);
+        }
+        currentBucket = currentBucket.next;
+      }
+    });
+    return valuesArray;
   };
 
   hashMap.entries = () => {
-    // returns an array that contains each key, value pair. Example: [[firstKey, firstValue], [secondKey, secondValue]]
+    const entriesArray = [];
+    hashMap.forEach((bucket) => {
+      let currentBucket = bucket;
+      while (currentBucket) {
+        if (currentBucket) {
+          entriesArray.push([currentBucket.key, currentBucket.value]);
+        }
+        currentBucket = currentBucket.next;
+      }
+    });
+    return entriesArray;
   };
   return hashMap;
 }
@@ -159,5 +188,8 @@ hashTable.set('ama', 'ergsdf');
 hashTable.set('aita', 'ergsdf');
 
 hashTable.count();
+hashTable.keys();
+hashTable.entries();
+hashTable.values();
 
 console.log(hashTable);
