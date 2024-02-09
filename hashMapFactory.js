@@ -47,15 +47,21 @@ function createHashMap() {
   };
 
   hashMap.get = (key) => {
-    // takes one argument as a key and returns the value that is assigned to this key. If a key is not found, return null.
-    // * Create another recursive function that traverses the linked list for the key
-    function name(params) {}
+    function traverseList(list, searchKey) {
+      let currentList = list;
+      while (currentList) {
+        if (currentList.key === searchKey) {
+          return currentList.value;
+        }
+        currentList = currentList.next;
+      }
+      return null;
+    }
     const retrievalBucket = hashMap[hash(key)];
-    if (retrievalBucket.key === key) {
-      return retrievalBucket.value;
+    if (retrievalBucket === undefined) {
+      return null;
     }
-    if (retrievalBucket.next) {
-    }
+    return traverseList(retrievalBucket, key);
   };
 
   hashMap.has = (key) => {
@@ -101,4 +107,5 @@ hashTable.set('eneko', 'ergsdf');
 hashTable.set('ainhoa', 'ergsdf');
 hashTable.set('ama', 'ergsdf');
 hashTable.set('aita', 'ergsdf');
+
 console.log(hashTable);
