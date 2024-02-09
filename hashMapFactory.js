@@ -19,7 +19,7 @@ function checkNext(obj, key, value) {
     return;
   }
   if (!obj.next) {
-    const newNode = { key, value };
+    const newNode = { key, value, previous: obj };
     obj.next = newNode;
   } else {
     checkNext(obj.next, key, value);
@@ -57,6 +57,7 @@ function createHashMap() {
       }
       return null;
     }
+
     const retrievalBucket = hashMap[hash(key)];
     if (retrievalBucket === undefined) {
       return null;
@@ -65,11 +66,49 @@ function createHashMap() {
   };
 
   hashMap.has = (key) => {
-    // takes a key as an argument and returns true or false based on whether or not the key is in the hash map.
+    return !!hashMap.get(key);
   };
 
+  // takes a key as an argument. If the given key is in the hash map, it should remove the entry with that key and return true. If the key isn’t in the hash map, it should return false.
   hashMap.remove = (key) => {
-    // takes a key as an argument. If the given key is in the hash map, it should remove the entry with that key and return true. If the key isn’t in the hash map, it should return false.
+    const retrievalBucket = hashMap[hash(key)];
+    const hashCode = hash(key);
+    function traverseList(list, searchKey) {
+      let previousKey;
+      let nextKey;
+      let currentList = list;
+      // Get the object for removal and its previous and next, if any
+      while (currentList) {
+        if (currentList.key === searchKey) {
+          if (currentList.previous) {
+            previousKey = currentList.previous;
+          }
+          if (currentList.next) {
+            nextKey = currentList.next;
+          }
+
+          // Remove and reposition previous and next if any
+          if (previousKey && nextKey) {
+            nextKey.previous = previousKey;
+            previousKey.next = nextKey;
+          } else if (nextKey && !previousKey) {
+            delete nextKey.previous;
+            hashMap[hashCode] = nextKey;
+          } else if (!nextKey && previousKey) {
+            delete previousKey.next;
+          } else {
+            hashMap[hashCode] = undefined;
+          }
+          return true;
+        }
+        currentList = currentList.next;
+      }
+      return false;
+    }
+    if (retrievalBucket === undefined) {
+      return false;
+    }
+    return traverseList(retrievalBucket, key);
   };
 
   //   hashMap.length = () => {
